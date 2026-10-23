@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Generated output
+results/
+logs/
+
+# Editor
+.vscode/
+
+# Packaging
+*.egg-info/
+build/
+dist/
