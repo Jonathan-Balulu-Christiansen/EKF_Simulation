@@ -16,10 +16,18 @@ from dataclasses import dataclass, field
 import numpy as np
 from scipy.stats import chi2
 
-from ekfsim.config import (AtmosphereConfig, FilterConfig, IRSensorConfig, PhysicsConstants, RadarConfig,
-                           ScenarioConfig, UIConfig, VehicleConfig)
-from ekfsim.ekf import ACC, BETA_ROW, FilterModel, position_sigma_max
 from ekfsim.atmosphere import US76Atmosphere
+from ekfsim.config import (
+    AtmosphereConfig,
+    FilterConfig,
+    IRSensorConfig,
+    PhysicsConstants,
+    RadarConfig,
+    ScenarioConfig,
+    UIConfig,
+    VehicleConfig,
+)
+from ekfsim.ekf import ACC, BETA_ROW, FilterModel, position_sigma_max
 from ekfsim.metrics import chi2_interval, nees
 from ekfsim.radar import cue_direction, doppler_shift, pointing_vector, required_prf, unambiguous_range
 from ekfsim.scenario import ScenarioResult, run_scenario, truth_summary

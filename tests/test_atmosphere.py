@@ -2,11 +2,16 @@
 continuity at the layer boundaries and at the top, and the exponential model."""
 
 import math
+from itertools import pairwise
 
 import pytest
 
-from ekfsim.atmosphere import (ExponentialAtmosphere, US76Atmosphere, geometric_to_geopotential,
-                               geopotential_to_geometric)
+from ekfsim.atmosphere import (
+    ExponentialAtmosphere,
+    US76Atmosphere,
+    geometric_to_geopotential,
+    geopotential_to_geometric,
+)
 from ekfsim.config import AtmosphereConfig, PhysicsConstants
 
 CFG = AtmosphereConfig()
@@ -61,7 +66,7 @@ def test_above_top_is_isothermal_exponential(us76):
 
 def test_density_decreases_with_altitude(us76):
     rho = [us76.properties(h).density for h in range(-500, 150_001, 500)]
-    assert all(b < a for a, b in zip(rho, rho[1:]))
+    assert all(b < a for a, b in pairwise(rho))
 
 
 @pytest.mark.parametrize("h", [-500.0, 0.0, 11_000.0, 50_000.0, 120_000.0])

@@ -32,3 +32,8 @@ ekfsim_ui = ["assets/fonts/*.ttf", "assets/fonts/OFL.txt", "assets/icons/*.svg"]
 testpaths = ["tests"]
 pythonpath = ["src"]
 addopts = "-ra"
+
+[tool.ruff]
+# the code is written to a 110-character line; at Ruff's default of 88 the import sorter would rewrap
+# every multi-name import
+line-length = 110

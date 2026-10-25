@@ -7,7 +7,6 @@ import warnings
 import numpy as np
 from scipy.stats import chi2
 
-
 # the chi2 bounds part:
 
 def chi2_interval(dof: int, confidence: float = 0.95) -> tuple[float, float]:

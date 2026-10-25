@@ -9,9 +9,20 @@ import numpy as np
 import pytest
 
 from ekfsim.config import PhysicsConstants, RadarConfig, ScenarioConfig, VehicleConfig
-from ekfsim.radar import (Radar, ScanStatus, cue_direction, doppler_shift, engine_flags, pointing_vector,
-                          required_prf, unambiguous_range, velocity_resolution, wavelength,
-                          wrap_to_2pi, wrap_to_pi)
+from ekfsim.radar import (
+    Radar,
+    ScanStatus,
+    cue_direction,
+    doppler_shift,
+    engine_flags,
+    pointing_vector,
+    required_prf,
+    unambiguous_range,
+    velocity_resolution,
+    wavelength,
+    wrap_to_2pi,
+    wrap_to_pi,
+)
 from ekfsim.scenario import acquire, plan_scans, simulate_truth
 
 CONST, RCFG, SCN = PhysicsConstants(), RadarConfig(), ScenarioConfig()
@@ -89,7 +100,7 @@ def test_h_then_inverse_returns_the_position():
 
 def test_range_rate_is_derivative_of_range():
     p, v, dt = np.array([-120e3, -60e3, 40e3]), np.array([900.0, 50.0, -300.0]), 1e-3
-    r = lambda q: RADAR.h(q, v)[0]  # noqa: E731
+    r = lambda q: RADAR.h(q, v)[0]
     rdot_fd = (r(p + v * dt) - r(p - v * dt)) / (2 * dt)  # central difference
     assert RADAR.h(p, v)[3] == pytest.approx(rdot_fd, rel=1e-8)
 

@@ -13,7 +13,7 @@ from PySide6.QtWidgets import QGridLayout, QLabel, QVBoxLayout, QWidget
 
 from ekfsim_ui import fmt, theme
 from ekfsim_ui.fmt import DASH
-from ekfsim_ui.theme import C, MODE_COLOUR, STATUS_COLOUR
+from ekfsim_ui.theme import MODE_COLOUR, STATUS_COLOUR, C
 from ekfsim_ui.timeline import Timeline
 from ekfsim_ui.widgets import Chip, Collapsible, eval_tag, label, section_header
 

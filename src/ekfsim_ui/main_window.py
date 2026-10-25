@@ -26,7 +26,7 @@ from ekfsim_ui.equations_panel import EquationsPanel
 from ekfsim_ui.playback import PlaybackClock, TransportBar, speed_text
 from ekfsim_ui.plots import PlotPanel
 from ekfsim_ui.readout import ReadoutPanel
-from ekfsim_ui.theme import C, MODE_COLOUR, STATUS_COLOUR
+from ekfsim_ui.theme import MODE_COLOUR, STATUS_COLOUR, C
 from ekfsim_ui.timeline import RunRequest, Timeline, compute
 from ekfsim_ui.view3d import Scene3D
 from ekfsim_ui.widgets import Chip, icon, label, scroll
@@ -61,7 +61,7 @@ class RunJob(QRunnable):
     def run(self):
         try:
             tl = self.executor.submit(compute, self.request, self.ui_cfg).result()
-        except Exception as e:  # reported to the GUI thread, which shows it
+        except Exception as e:  # noqa: BLE001 - any failure of the run is reported to the GUI thread, which shows it
             self.signals.failed.emit(f"{type(e).__name__}: {e}", traceback.format_exc(), self.token)
             return
         self.signals.done.emit(tl, self.token)
@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
 
     def _initial_split(self):
         """set the initial splitter shares once the window has its real size."""
-        left, row, outer = self._splitters
+        row = self._splitters[1]
         w = row.width()
         row.setSizes([round(f * w) for f in SPLIT_W])
         self._fit_left(self.controls.advanced.button.isChecked())

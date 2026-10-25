@@ -7,7 +7,6 @@ FilterConfig and UIConfig."""
 import math
 from dataclasses import dataclass
 
-
 # the physical constants part:
 
 @dataclass(frozen=True)

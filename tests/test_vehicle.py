@@ -8,8 +8,14 @@ import pytest
 
 from ekfsim.atmosphere import US76Atmosphere
 from ekfsim.config import AtmosphereConfig, PhysicsConstants, VehicleConfig
-from ekfsim.vehicle import (derived_values, pitch_angle, pitch_end_time, thrust_direction,
-                            thrust_magnitude, validate_vehicle)
+from ekfsim.vehicle import (
+    derived_values,
+    pitch_angle,
+    pitch_end_time,
+    thrust_direction,
+    thrust_magnitude,
+    validate_vehicle,
+)
 
 CFG = VehicleConfig()
 CONST = PhysicsConstants()

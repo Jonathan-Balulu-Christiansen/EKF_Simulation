@@ -7,8 +7,18 @@ import math
 import numpy as np
 from PySide6.QtCore import QEvent, QPointF, QRect, QRectF, QSize, Qt, Signal
 from PySide6.QtGui import QColor, QIcon, QIconEngine, QPainter, QPainterPath, QPen, QPixmap
-from PySide6.QtWidgets import (QFrame, QHBoxLayout, QLabel, QLayout, QScrollArea, QSizePolicy, QToolButton, QToolTip,
-                               QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLayout,
+    QScrollArea,
+    QSizePolicy,
+    QToolButton,
+    QToolTip,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ekfsim_ui import theme
 from ekfsim_ui.theme import C

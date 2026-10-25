@@ -11,15 +11,44 @@ import dataclasses
 import math
 
 from PySide6.QtCore import QEvent, QObject, Qt, Signal
-from PySide6.QtWidgets import (QButtonGroup, QCheckBox, QComboBox, QDoubleSpinBox, QFormLayout, QHBoxLayout,
-                               QProgressBar, QPushButton, QSizePolicy, QSlider, QSpinBox, QTabWidget, QToolButton,
-                               QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QButtonGroup,
+    QCheckBox,
+    QComboBox,
+    QDoubleSpinBox,
+    QFormLayout,
+    QHBoxLayout,
+    QProgressBar,
+    QPushButton,
+    QSizePolicy,
+    QSlider,
+    QSpinBox,
+    QTabWidget,
+    QToolButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ekfsim.atmosphere import US76Atmosphere
-from ekfsim.config import (AtmosphereConfig, FilterConfig, IRSensorConfig, PhysicsConstants, RadarConfig,
-                           ScenarioConfig, UIConfig, VehicleConfig)
-from ekfsim.radar import cue_direction, doppler_shift, required_prf, unambiguous_range, validate_radar, wavelength, \
-    velocity_resolution
+from ekfsim.config import (
+    AtmosphereConfig,
+    FilterConfig,
+    IRSensorConfig,
+    PhysicsConstants,
+    RadarConfig,
+    ScenarioConfig,
+    UIConfig,
+    VehicleConfig,
+)
+from ekfsim.radar import (
+    cue_direction,
+    doppler_shift,
+    required_prf,
+    unambiguous_range,
+    validate_radar,
+    velocity_resolution,
+    wavelength,
+)
 from ekfsim.vehicle import derived_values, pitch_end_time, validate_vehicle
 from ekfsim_ui import fmt, theme
 from ekfsim_ui.fmt import DASH, RDOT

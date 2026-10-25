@@ -5,8 +5,9 @@ simplifications: flat Earth, no Coriolis or centrifugal terms (small at these sp
 times), velocity relative to still air (no wind)."""
 
 import math
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable, NamedTuple, Protocol
+from typing import NamedTuple, Protocol
 
 import numpy as np
 

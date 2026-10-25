@@ -28,7 +28,7 @@ from ekfsim.config import UIConfig
 from ekfsim.ekf import BETA_ROW, N_STATE
 from ekfsim_ui import fmt, theme
 from ekfsim_ui.fmt import DASH, RDOT
-from ekfsim_ui.theme import C, MODE_COLOUR
+from ekfsim_ui.theme import MODE_COLOUR, C
 from ekfsim_ui.timeline import Timeline
 from ekfsim_ui.widgets import Chip, MatrixView, TextTable, eval_tag, label, scroll, section_header
 

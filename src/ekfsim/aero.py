@@ -2,7 +2,7 @@
 the table itself lives in VehicleConfig and is an ESTIMATE of a textbook slender-body shape."""
 
 from bisect import bisect_right
-
+from itertools import pairwise
 
 # the Cd(Mach) table part:
 
@@ -16,7 +16,7 @@ class CdTable:
     def __init__(self, mach_points: tuple[float, ...], cd_values: tuple[float, ...]):
         if len(mach_points) != len(cd_values) or len(mach_points) < 2:
             raise ValueError("the Cd table needs at least two points and one Cd per Mach point")
-        if any(b <= a for a, b in zip(mach_points, mach_points[1:])):
+        if any(b <= a for a, b in pairwise(mach_points)):
             raise ValueError("the Mach points of the Cd table must be strictly increasing")
         if any(cd <= 0.0 for cd in cd_values):
             raise ValueError("every Cd in the table must be positive")

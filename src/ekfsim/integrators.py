@@ -5,7 +5,8 @@ it takes a right-hand side f(t, x, seg), a list of known event times and a groun
   from the last state above ground (not by linear interpolation, which is only 2nd order).
 - there are deliberately no events for Cd(Mach) table points or ISA layer boundaries."""
 
-from typing import Callable, NamedTuple
+from collections.abc import Callable
+from typing import NamedTuple
 
 import numpy as np
 

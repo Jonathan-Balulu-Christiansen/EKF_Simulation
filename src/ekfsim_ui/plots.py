@@ -13,12 +13,20 @@ import math
 import numpy as np
 import pyqtgraph as pg
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QButtonGroup, QGraphicsItem, QHBoxLayout, QTabWidget, QToolButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QButtonGroup,
+    QGraphicsItem,
+    QHBoxLayout,
+    QTabWidget,
+    QToolButton,
+    QVBoxLayout,
+    QWidget,
+)
 
 from ekfsim.config import UIConfig, VehicleConfig
 from ekfsim_ui import theme
 from ekfsim_ui.fmt import DEG, RDOT
-from ekfsim_ui.theme import C, SANS
+from ekfsim_ui.theme import SANS, C
 from ekfsim_ui.timeline import Timeline
 from ekfsim_ui.widgets import FlowLayout, Swatch, eval_tag, label
 
@@ -221,8 +229,8 @@ class PlotPanel(QTabWidget):
         group = QButtonGroup(box)
         group.setExclusive(True)
         self.window_buttons = {}
-        for key, text, tip in ((True, f"{self.ui.plot_window:g} s", "time axis follows the cursor over the last "
-                                f"{self.ui.plot_window:g} s; the y-axes fit the data in that window"),
+        for key, text, tip in ((True, f"{self.ui.plot_window:g} s", ("time axis follows the cursor over the last "
+                                f"{self.ui.plot_window:g} s; the y-axes fit the data in that window")),
                                (False, "Full", "time axis shows the whole flight")):
             b = QToolButton()
             b.setText(text)

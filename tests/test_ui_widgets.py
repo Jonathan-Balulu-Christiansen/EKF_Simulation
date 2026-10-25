@@ -95,6 +95,7 @@ def test_playback_clock_follows_wall_time_not_ticks(qapp):
 
 def test_every_equation_renders(qapp):
     from PySide6.QtGui import QPixmap
+
     from ekfsim_ui.equations_panel import EquationImage, EquationsPanel, render_equation
     panel = EquationsPanel()
     images = panel.findChildren(EquationImage)
@@ -145,7 +146,7 @@ def test_readout_takes_every_kind_of_scan(qapp, default_timeline):
         if name == "boost":
             assert r.chips["mode"].text().startswith("BOOST")
     # a NIS outside its 95 % interval is drawn in the warning colour
-    lo, hi = tl.nis_bounds
+    _, hi = tl.nis_bounds
     k = int(np.flatnonzero(np.asarray(tl.nis) > hi)[0])
     r.update_cursor(tl, float(tl.t_scan[k]), k, tl.truth_index(float(tl.t_scan[k])), 1.0)
     from ekfsim_ui.theme import C
@@ -180,6 +181,7 @@ def test_main_window_shows_a_run(qapp, default_timeline):
 def test_a_run_computes_in_the_child_process_without_blocking(qapp):
     """start_run() computes in the spawned process; the GUI thread keeps its event loop running."""
     from PySide6.QtCore import QElapsedTimer, QEventLoop, QTimer
+
     from ekfsim_ui.main_window import MainWindow
     w = MainWindow(autoplay=False)
     done, ticks = [], []
@@ -377,6 +379,7 @@ def test_the_transport_bar_never_overlaps_at_the_smallest_window(qapp, default_t
     """THEORY 8.9: nothing clipped or overlapping at any size. at the window's minimum width the centre column
     still holds the whole transport bar, so its buttons and labels never sit on top of each other."""
     from PySide6.QtWidgets import QSlider, QWidget
+
     from ekfsim_ui.main_window import MainWindow
     w = MainWindow(autoplay=False)
     w._run_done(default_timeline, w._token)

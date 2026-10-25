@@ -13,8 +13,15 @@ import numpy as np
 
 from ekfsim.aero import CdTable
 from ekfsim.atmosphere import US76Atmosphere
-from ekfsim.config import (AtmosphereConfig, FilterConfig, IRSensorConfig, PhysicsConstants, RadarConfig,
-                           ScenarioConfig, VehicleConfig)
+from ekfsim.config import (
+    AtmosphereConfig,
+    FilterConfig,
+    IRSensorConfig,
+    PhysicsConstants,
+    RadarConfig,
+    ScenarioConfig,
+    VehicleConfig,
+)
 from ekfsim.ekf import N_STATE, FilterModel, StatusEvent, StepRecord, Tracker
 from ekfsim.integrators import integrate
 from ekfsim.radar import Radar, Scan, cue_direction, engine_flags, pointing_vector
@@ -214,7 +221,7 @@ def plan_scans(truth: TruthResult, radar: Radar, scenario_cfg: ScenarioConfig,
     t_k = k T_update, k = 0, 1, ... while t_k <= t_impact - scan emission times"""
     T = radar.cfg.update_interval  # T_update in [s]
     tol = scenario_cfg.time_tol  # two times closer than this are one instant, in [s]
-    n = int(math.floor((truth.t[-1] + tol) / T)) + 1  # number of scans up to the last truth sample
+    n = math.floor((truth.t[-1] + tol) / T) + 1  # number of scans up to the last truth sample
     t = np.arange(n) * T  # t_k in [s]
     idx = np.searchsorted(truth.t, t - tol)  # first truth sample at or after t_k - tol
     if np.any(idx >= len(truth.t)) or np.any(np.abs(truth.t[np.minimum(idx, len(truth.t) - 1)] - t) > tol):

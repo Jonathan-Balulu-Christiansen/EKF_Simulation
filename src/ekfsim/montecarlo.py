@@ -455,12 +455,12 @@ def mass_sweep(args) -> int:
     """the mass sweep of THEORY 7: the same filter settings for every dry_mass_delta, no per-mass tuning."""
     cfg = _filter_cfg("boost_on_net_on", args.q_beta, args.q_thrust)
     seeds = list(range(args.seed, args.seed + args.runs))
-    out, lines = {}, [f"Mass sweep (THEORY 7, information): {args.runs} runs per mass, boost mode on, safety net on, "
-                      f"q_beta {cfg.q_beta}, q_thrust {cfg.q_thrust}, the same filter settings for every mass "
-                      f"(evaluation - uses truth)",
+    out, lines = {}, [(f"Mass sweep (THEORY 7, information): {args.runs} runs per mass, boost mode on, safety net on, "
+                       f"q_beta {cfg.q_beta}, q_thrust {cfg.q_thrust}, the same filter settings for every mass "
+                       "(evaluation - uses truth)"),
                       "ANEES shares are inside / above (over-confident) / below (conservative) the 95 % bounds, in %",
-                      f"pass: over-confident in at most {100 * OVERCONFIDENT_MAX:.0f} % of the ballistic scans "
-                      f"(the acceptance rule of THEORY 7)", ""]
+                      (f"pass: over-confident in at most {100 * OVERCONFIDENT_MAX:.0f} % of the ballistic scans "
+                       "(the acceptance rule of THEORY 7)"), ""]
     head = (f"{'dry_mass_delta':>15}{'ballistic':>22}{'coast':>22}{'re-entry':>22}{'pass':>6}{'lost':>6}"
             f"{'pos RMSE med':>14}{'ln beta re-entry':>18}{'net on boost/coast/re':>24}")
     lines.append(head)
@@ -473,7 +473,7 @@ def mass_sweep(args) -> int:
         s["reentry_start_s"] = float(detail.plan.t[int(np.argmax(phases == "reentry"))]) if np.any(phases == "reentry") else None
         out[f"{dm:+.0f}"] = s
         sh, trig = s["consistency_shares"]["anees"], s["safety_net"]
-        fmt = lambda v: "n/a" if v is None else f"{100 * v:.0f}"  # noqa: E731
+        fmt = lambda v: "n/a" if v is None else f"{100 * v:.0f}"
         lines.append(f"{dm:>+15,.0f}{_share_text(sh['ballistic']):>22}{_share_text(sh['coast']):>22}"
                      f"{_share_text(sh['reentry']):>22}{'PASS' if s['acceptance_overconfident_max_10pct'] else 'FAIL':>6}"
                      f"{s['lock']['runs_lost']:>6}{s['rmse_pos_m']['ballistic_median'] or float('nan'):>12.1f} m"

@@ -200,7 +200,7 @@ current working directory):
 .venv\Scripts\python -m pytest -q
 ```
 
-214 tests. The core runs headless, and the UI tests run on Qt's offscreen platform. They cover:
+217 tests. The core runs headless, and the UI tests run on Qt's offscreen platform. They cover:
 
 - **Physics and numerics:** the atmosphere reference values, the RK4 order on a smooth case (the error
   ratio per halving is 1/16), energy and mass conservation, exact event splitting.
@@ -211,7 +211,9 @@ current working directory):
 - **UI:** contrast and font coverage of the theme, the pulse geometry, the display units, and that a run
   computes without blocking the event loop.
 
-A static test also checks that the filter never imports the truth model.
+A static test also checks that the filter never imports the truth model. The code passes the
+[Ruff](https://docs.astral.sh/ruff/) linter with its default rules and the line length set in `pyproject.toml`
+(`ruff check .`).
 
 Every function documents its equations in plain text, one per line, followed by the name of the quantity.
 Comments cite the sections of [docs/THEORY.md](docs/THEORY.md) as `(THEORY 6.3)`.

@@ -48,7 +48,7 @@ def test_core_loads_no_qt_at_runtime():
 
 def test_core_source_has_no_qt_import():
     """static check that also catches imports hidden inside functions."""
-    pattern = re.compile(r"^\s*(import|from)\s+(" + "|".join(QT_PACKAGES) + r")\b", re.M)
+    pattern = re.compile(r"^\s*(import|from)\s+(" + "|".join(QT_PACKAGES) + r")\b", re.MULTILINE)
     offenders = [p.name for p in (SRC_DIR / "ekfsim").rglob("*.py")
                  if pattern.search(p.read_text(encoding="utf-8"))]
     assert offenders == []
@@ -57,7 +57,7 @@ def test_core_source_has_no_qt_import():
 def test_ui_stack_installed():
     import OpenGL.GL  # noqa: F401
     import pyqtgraph
-    import pyqtgraph.opengl  # noqa: F401
+    import pyqtgraph.opengl
     from PySide6 import QtWidgets  # noqa: F401
 
     assert pyqtgraph.__version__.startswith("0.14.")

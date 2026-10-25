@@ -3,6 +3,7 @@ full-model convergence, energy conservation, mass bookkeeping, plus flight-struc
 
 import dataclasses
 import math
+from itertools import pairwise
 
 import numpy as np
 import pytest
@@ -42,7 +43,7 @@ def test_rk4_order_on_smooth_configuration():
     ref = run(1.0 / 64, model=model, initial_state=x0, scn=tight).impact_point
     err = [np.linalg.norm(run(dt, model=model, initial_state=x0, scn=tight).impact_point - ref)
            for dt in (1.0, 0.5, 0.25)]
-    for e_coarse, e_fine in zip(err, err[1:]):
+    for e_coarse, e_fine in pairwise(err):
         assert e_fine / e_coarse == pytest.approx(1 / 16, rel=0.2)
 
 

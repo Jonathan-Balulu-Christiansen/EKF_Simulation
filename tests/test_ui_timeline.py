@@ -8,10 +8,9 @@ import math
 import numpy as np
 import pytest
 
-from ekfsim.config import FilterConfig, RadarConfig, UIConfig
+from ekfsim.config import AtmosphereConfig, FilterConfig, PhysicsConstants, RadarConfig, UIConfig
 from ekfsim.ekf import FilterModel, Tracker
 from ekfsim.radar import Radar
-from ekfsim.config import AtmosphereConfig, PhysicsConstants
 from ekfsim_ui import fmt
 from ekfsim_ui.timeline import KM, RunRequest, compute, ellipsoid_axes, rotation_from_z
 

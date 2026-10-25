@@ -8,7 +8,7 @@ import pytest
 
 from ekfsim.integrators import integrate, rk4_step
 
-NEVER = lambda x: 1.0  # noqa: E731  ground function that never reaches the ground
+NEVER = lambda x: 1.0  # ground function that never reaches the ground
 
 
 def test_rk4_is_fourth_order():
@@ -27,7 +27,7 @@ def test_event_inside_step_is_hit_exactly():
     """x' = 1 before the event and 0 after it: x ends exactly at the event time, which needs the
     split step and the segment index passed to every stage."""
     t_event = 0.123
-    f = lambda t, x, seg: np.array([1.0 if seg == 0 else 0.0])  # noqa: E731
+    f = lambda t, x, seg: np.array([1.0 if seg == 0 else 0.0])
     sol = integrate(f, np.array([0.0]), 0.0, 0.1, (t_event,), NEVER, t_max=0.5, time_tol=1e-9)
     i = sol.event_index[0]
     assert sol.t[i] == t_event and sol.segment[i] == 0
@@ -39,7 +39,7 @@ def test_event_inside_step_is_hit_exactly():
 
 
 def test_event_on_grid_point_replaces_it():
-    f = lambda t, x, seg: np.array([1.0])  # noqa: E731
+    f = lambda t, x, seg: np.array([1.0])
     sol = integrate(f, np.array([0.0]), 0.0, 0.1, (0.3 + 1e-12,), NEVER, t_max=0.5, time_tol=1e-9)
     assert len(sol.t) == 6  # 0.0 ... 0.5, no near-duplicate sample
     assert sol.t[sol.event_index[0]] == 0.3 + 1e-12
@@ -50,7 +50,7 @@ def test_impact_by_bisection_on_parabola():
     must therefore match the analytic one to the bisection tolerance; linear interpolation of the
     last step would miss it by metres."""
     g, vx, vz = 9.81, 50.0, 100.0
-    f = lambda t, x, seg: np.array([x[2], x[3], 0.0, -g])  # noqa: E731  x = [px, pz, vx, vz]
+    f = lambda t, x, seg: np.array([x[2], x[3], 0.0, -g])  # x = [px, pz, vx, vz]
     sol = integrate(f, np.array([0.0, 0.0, vx, vz]), 0.0, 0.7, (), lambda x: x[1],
                     t_max=100.0, time_tol=1e-10)
     t_imp = 2.0 * vz / g  # analytic flight time in [s]
@@ -62,6 +62,6 @@ def test_impact_by_bisection_on_parabola():
 
 
 def test_t_max_without_impact():
-    f = lambda t, x, seg: np.array([1.0])  # noqa: E731
+    f = lambda t, x, seg: np.array([1.0])
     sol = integrate(f, np.array([0.0]), 0.0, 0.25, (), NEVER, t_max=1.0, time_tol=1e-9)
     assert sol.impact_index is None and sol.t[-1] == 1.0

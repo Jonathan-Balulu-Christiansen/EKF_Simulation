@@ -15,6 +15,7 @@ the opaque items with depth test on and depth writes off, so they never hide eac
 the screen-space markers and labels are drawn last without depth test, so they stay visible."""
 
 import math
+from itertools import pairwise
 
 import numpy as np
 import pyqtgraph as pg
@@ -472,7 +473,7 @@ class Scene3D(QWidget):
                 # the name sits in the middle of the widest gap between the boundary labels inside its band, so it
                 # never crowds one of them (the stratosphere spans three boundary labels)
                 cuts = [lo_km] + [z for z in drawn if lo_km < z < hi_km] + [hi_km]
-                a, b = max(zip(cuts[:-1], cuts[1:]), key=lambda g: g[1] - g[0])
+                a, b = max(pairwise(cuts), key=lambda g: g[1] - g[0])
                 self.atmo_labels.add([ax, ay, 0.5 * (a + b)], name, C.INK_2)
         self._show_atmosphere()
 

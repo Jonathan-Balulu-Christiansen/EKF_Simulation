@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
+from ekfsim.config import FilterConfig, PhysicsConstants, RadarConfig, ScenarioConfig
 from ekfsim.metrics import average_interval, chi2_interval, nees, normalised_squared, rmse
 from ekfsim.montecarlo import OVERCONFIDENT_MAX, aggregate, flight_phases, mode_summary
-from ekfsim.config import FilterConfig, RadarConfig, PhysicsConstants, ScenarioConfig
 from ekfsim.radar import Radar
 from ekfsim.scenario import plan_scans, simulate_truth
 
