@@ -5,7 +5,7 @@ model flies a generic ballistic vehicle; a simulated X-band radar measures range
 range-rate; and an Extended Kalman Filter tracks the flight and estimates the ballistic coefficient. A live
 3D view, cursor-linked plots and an equations panel show every step of the computation with its numbers.
 
-The vehicle is generic and illustrative. Its parameters are round, generic values, not the data of any
+The vehicle is illustrative: its parameters are round, generic values, not the data of any
 specific system, chosen only so that the flight shows a boost, a coast and an atmospheric re-entry. Nothing
 in the project is tuned towards a performance figure; the subject is the tracker.
 
@@ -21,7 +21,7 @@ flight time). The beam starts at the launch-site cue and then follows the filter
 
 ## How it works
 
-**Truth physics.** A point-mass model with thrust, propellant burn (decreasing mass), drag with a
+**Truth model.** A point-mass model with thrust, propellant burn (decreasing mass), drag with a
 Mach-dependent coefficient, inverse-square gravity, and altitude-dependent thrust through the nozzle
 exit-pressure term. One atmosphere model, the US Standard Atmosphere 1976 (seven layers, integrated from the
 sea-level values), supplies density, pressure and the speed of sound everywhere. Fixed-step RK4 splits the
@@ -40,7 +40,8 @@ for this flight needs PRF > 85 kHz, which leaves an unambiguous range of only 1.
 on/off, and that flag alone sets the mode:
 
 - **BOOST** estimates the unknown thrust acceleration a as a random walk. β is unobservable while the engine
-  burns (thrust and drag act along nearly the same line), so its row of the gain is zeroed, a consider update.
+  burns (thrust and drag act along nearly the same line), so its row of the gain is zeroed (a Schmidt
+  "consider" update).
 - **BALLISTIC** fixes a = 0 and learns ln β.
 
 The flag reports burnout half a second late. At the flag change the filter restores its state from a scan
@@ -53,20 +54,20 @@ The rest of the filter:
 - the covariance update uses the Joseph form;
 - the angle innovations are wrapped;
 - the process-noise levels are derived from steady-state lag theory rather than tuned;
-- a two-level safety net switches on extra manoeuvre noise when the windowed NIS leaves its bound, with a
+- a two-level safety net switches on extra maneuver noise when the windowed NIS leaves its bound, with a
   threshold set by a false-alarm budget of 1 % per flight.
 
 **Desktop UI.** PySide6 and pyqtgraph. A run is computed once in a separate process and then played back at
 ×0.1 to ×20 at 60 fps. The panels are:
 
 - the 3D view, with the 3σ covariance ellipsoid and the ISA layer boundaries the flight crosses;
-- a filter-first readout;
+- a readout of the filter's estimates;
 - plots of position error, NIS and β against their ±3σ bands;
 - an equations drawer with the live values of every step, the large matrices as unit-free heat maps;
 - a slow-motion pulse view, in which one 300 m pulse travels out and back at ×1/100,000 of real time.
 
-Every exaggeration is labelled on screen with its factor, and every view that reads ground truth carries the
-tag "evaluation – uses truth".
+Every visual magnification is labeled on screen with its factor, and every view that reads ground truth carries
+the tag "evaluation – uses truth".
 
 ![A full flight played at ×20](docs/media/run_x20.gif)
 
@@ -221,14 +222,15 @@ Comments cite the sections of [docs/THEORY.md](docs/THEORY.md) as `(THEORY 6.3)`
 ## Design decisions
 
 - **Truth is for evaluation only.** The tracker never reads it: not for the beam pointing, the track status,
-  the noise adaptation or the initialisation. Only the measurement generator and the views tagged
+  the noise adaptation or the initialization. Only the measurement generator and the views tagged
   "evaluation – uses truth" do.
-- **No inverse crime.** The filter shares the atmosphere with the truth, but assumes a constant β (the truth
-  has Cd(Mach) and a changing mass) and estimates the thrust instead of modelling it.
+- **No inverse crime.** The filter is never tested on its own model: it shares the atmosphere with the truth
+  model, but assumes a constant β (the truth has Cd(Mach) and a changing mass) and estimates the thrust
+  instead of modeling it.
 - **ln β, not β.** It keeps β positive and makes a parameter that spans two decades well conditioned.
 - **Derived, not tuned.** The process noise comes from steady-state lag theory with one margin rule (lag at
   most half the parameter's own σ) over the whole mass range. The safety-net level is the largest
-  acceleration the class can have unmodelled; its threshold comes from a per-flight false-alarm budget.
+  acceleration the class can have unmodeled; its threshold comes from a per-flight false-alarm budget.
 - **Joseph form.** It keeps P symmetric and positive definite, and stays exact for the non-optimal gain of
   the frozen ln β row.
 - **Compute, then play back.** The filter is strictly causal; precomputing only makes pause, scrub and slow
@@ -243,11 +245,11 @@ Comments cite the sections of [docs/THEORY.md](docs/THEORY.md) as `(THEORY 6.3)`
   deceleration estimate would address it.
 - **Boost noise set by the lightest vehicle.** q_thrust covers the steepest thrust ramp of the mass range,
   so heavier vehicles are conservative in boost.
-- **ln β collapse at the switch in 5 of 100 runs.** When drag first becomes informative, the EKF linearises
+- **ln β collapse at the switch in 5 of 100 runs.** When drag first becomes informative, the EKF linearizes
   exp(−ln β) at the current estimate. Noise that asks for more drag can shrink σ(ln β) onto a wrong value for
-  a few seconds. A filter that does not linearise this term, such as a UKF, would address it.
+  a few seconds. A filter that does not linearize this term, such as a UKF, would address it.
 - **Safety-net budget.** It is set for one nominal flight length, so longer flights see a slightly higher
-  false-alarm rate. The higher threshold also reacts later to a real unmodelled acceleration.
+  false-alarm rate. The higher threshold also reacts later to a real unmodeled acceleration.
 - **Latency scans.** The records of the half second between burnout and the flag keep what a causal filter
   reported at the time; re-processing corrects the state from the flag on.
 - **Weak early observability.** The vertical thrust component is poorly observed at low elevation right after

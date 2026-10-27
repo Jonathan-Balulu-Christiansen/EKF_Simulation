@@ -1,7 +1,7 @@
 # Theory: the model and the filter, step by step
 
 This document explains what the simulator computes and why, in the order the computation runs: the truth
-physics of the flight, the radar measurement model, the Extended Kalman Filter, and the consistency tests
+model of the flight, the radar measurement model, the Extended Kalman Filter, and the consistency tests
 that check it. Section numbers match the references in the code comments (for example `(THEORY 6.3)` in
 `ekf.py` points to section 6.3 below).
 
@@ -13,14 +13,14 @@ everywhere inside the code (m, s, kg, rad); km, degrees and kN appear only on sc
 
 ## 0. Principles
 
-**0.1 Honest visuals.** Every visual is a computed quantity. Every exaggeration is printed on screen with
-its factor: the covariance ellipsoid magnification (×1 / ×10 / ×100), the screen-space markers ("symbols not
-to scale"), and the time factor of the pulse view ("TIME ×1/100,000").
+**0.1 Faithful visuals.** Every visual is a computed quantity. Every visual magnification is printed on
+screen with its factor: the covariance ellipsoid magnification (×1 / ×10 / ×100), the screen-space markers
+("symbols not to scale"), and the time factor of the pulse view ("TIME ×1/100,000").
 
 **0.2 Truth is for evaluation only.** The ground truth of the flight is read by two parts of the code only:
 the measurement generator (the radar, which must observe the real target) and the evaluation views and
 metrics, which carry the tag "evaluation – uses truth". Nothing in the tracker reads it: not the beam
-pointing, not the track status, not the noise adaptation, not the initialisation.
+pointing, not the track status, not the noise adaptation, not the initialization.
 
 **0.3 No inverse crime.** The truth simulator and the filter use different models on purpose (6.2). A
 filter that shares the generating model exactly is tested only against itself.
@@ -130,7 +130,7 @@ The base values T_b, p_b of every layer are integrated from the sea-level values
 table. Above the top the temperature is held, which gives an exponential continuation matched at the
 boundary (ρ ≈ 7·10⁻⁶ kg/m³ there). Tests check ρ(0) = 1.2250, ρ(11 km) = 0.3648, ρ(20 km) = 0.0889 kg/m³.
 
-The 3D view draws the layer boundaries that the flight passes through, labelled with the geometric altitude
+The 3D view draws the layer boundaries that the flight passes through, labeled with the geometric altitude
 and the density these equations give there (11.0 km, ρ 0.364 kg/m³; 20.1 km, 0.0880 kg/m³; …).
 
 ### 4.4 Drag coefficient Cd(Mach)
@@ -268,7 +268,7 @@ BOOST:      da/dt = 0 + random walk (q_thrust),   ln β frozen
 BALLISTIC:  a = 0 (fixed, zero variance),         d(ln β)/dt = 0 + random walk (q_β)
 ```
 
-The filter uses the same ISA density as the truth (a known atmosphere). The deliberate mismatch is
+The filter uses the same ISA density as the truth model (a known atmosphere). The deliberate mismatch is
 elsewhere: a constant β against the truth's Cd(Mach) and changing mass, and an estimated acceleration
 against the truth's thrust model.
 
@@ -289,9 +289,9 @@ restores its state at the last scan at or before `t_flag − L − T` (never aft
 (rows and columns of `a` in P zeroed), switches to BALLISTIC and re-processes the buffered scans. In the
 default run it restores 62.9 s at the flag (63.5 s) and replays 6 scans. Restoring *after* burnout would
 carry thrust that never happened; the BALLISTIC model could explain it only by more drag, and the EKF
-linearisation of `exp(−ln β)` would then collapse σ(ln β) onto a wrong value.
+linearization of `exp(−ln β)` would then collapse σ(ln β) onto a wrong value.
 
-### 6.3 Discretisation and process noise
+### 6.3 Discretization and process noise
 
 The state is propagated with RK4 sub-steps (at most 25 ms). The continuous Jacobian `A = ∂f/∂x` is analytic,
 including the altitude terms through `dρ/dh` and `dg/dh`:
@@ -320,7 +320,7 @@ Q_lnβ  = q_β Δt
 **The noise levels are derived, not tuned.**
 
 - *Kinematic floor and drag share: both 0.* In ballistic flight the truth and the filter share gravity, the
-  density, the flat Earth and still air, and the mass is constant, so no force is left unmodelled (the
+  density, the flat Earth and still air, and the mass is constant, so no force is left unmodeled (the
   integrator difference is about 10⁻¹¹ m/s²). The remaining drag mismatch, Cd(Mach) against a constant β,
   is carried by the ln β random walk (next point); adding a drag-proportional term on top would count it
   twice. A test keeps this justified if the table or q_β change.
@@ -350,7 +350,7 @@ y_k = z − h(x_{k|k-1})                         innovation, angle rows wrapped 
 S_k = H_k P_{k|k-1} H_kᵀ + R                   innovation covariance
 K_k = P_{k|k-1} H_kᵀ S_k⁻¹                     gain, from a linear solve (never an explicit inverse)
 x_{k|k} = x_{k|k-1} + K_k y_k
-P_{k|k} = (I − K_k H_k) P_{k|k-1} (I − K_k H_k)ᵀ + K_k R K_kᵀ      Joseph form, then symmetrised
+P_{k|k} = (I − K_k H_k) P_{k|k-1} (I − K_k H_k)ᵀ + K_k R K_kᵀ      Joseph form, then symmetrized
 ```
 
 The Joseph form keeps P symmetric and positive definite under rounding, and it stays exact for a gain that
@@ -361,11 +361,11 @@ so P is singular there by construction.
 Tests: the analytic A and H against central finite differences (relative error below 10⁻⁵ at random
 states), and a linear constant-velocity case in which the EKF reproduces the textbook Kalman filter to 10⁻¹⁰.
 
-### 6.5 Initialisation (from the first detection only)
+### 6.5 Initialization (from the first detection only)
 
 ```
 p0   = p_radar + r [cos el sin az, cos el cos az, sin el]          inverse of h
-P_pp = J diag(σ_r², σ_az², σ_el²) Jᵀ,  J = ∂p/∂(r, az, el)         linearised conversion of R
+P_pp = J diag(σ_r², σ_az², σ_el²) Jᵀ,  J = ∂p/∂(r, az, el)         linearized conversion of R
 v0   = ṙ u_r,   P_vv = σ_ṙ² u_r u_rᵀ + σ_t² (I − u_r u_rᵀ)         radial part measured, σ_t = 1 km/s
 ln β0 = ln 5,000 with σ = 1.5;  a0 = 0 with σ = 30 m/s² per axis (BOOST)
 ```
@@ -375,7 +375,7 @@ ln β0 = ln 5,000 with σ = 1.5;  a0 = 0 with σ = 30 m/s² per axis (BOOST)
 With an explicit thrust model in BOOST the noise adaptation should rarely act; it is kept as a safety net
 (Bar-Shalom et al.). When the window mean of the last n ≤ N_w = 10 NIS values exceeds a threshold, an
 additional white acceleration with σ_m = 86.8 m/s² is switched on; it is switched off when the mean is
-back. σ_m is the largest acceleration this class can have unmodelled: the vacuum thrust over the smallest
+back. σ_m is the largest acceleration this class can have unmodeled: the vacuum thrust over the smallest
 burnout mass.
 
 The threshold comes from a false-alarm budget **per flight**, not per test. The test runs after every update,
@@ -413,7 +413,7 @@ ln β is left out of NEES because its truth varies with time and the filter mode
 its error is reported apart. The Monte Carlo runner repeats the same flight with N noise seeds and splits
 the time inside, above (over-confident) and below (conservative) the N-run bounds by flight phase: boost,
 coast, and re-entry (from the first descending scan with drag ≥ 0.05 g). The acceptance rule counts
-over-confidence only (at most 10 % of the ballistic scans): a truth without process noise penalises a
+over-confidence only (at most 10 % of the ballistic scans): a truth without process noise penalizes a
 conservative filter by construction, so conservatism is reported but not counted as a failure.
 
 ---
@@ -430,15 +430,15 @@ groups, the equations drawer).
 
 **8.3 3D view.** The scene is 1:1 in km. It shows the ground grid, range rings, the E/N/U axes, the truth
 and estimate trajectories, the measurements (converted to ENU for display only), screen-space markers, the
-3σ position ellipsoid (eigen-decomposition of the position block of P), the beam cone (grey on a miss), and
+3σ position ellipsoid (eigen-decomposition of the position block of P), the beam cone (gray on a miss), and
 the ISA layer boundaries (4.3).
 
 **8.4 Plots.** Position error ±3σ, NIS with its χ² band, β against truth, and under "More": velocity
 error, innovations ±3√S_ii, truth kinematics and the Cd table. By default the time axis is a 60 s window
 that pages with the cursor, so each flight phase is shown at its own error scale.
 
-**8.5 Pulse view.** One pulse is shown at its true length c τ = 300 m, travelling at c, reflecting at the
-target and returning. A wavefront emitted at offset s ∈ [0, τ] has travelled the path c (t − t_tx − s):
+**8.5 Pulse view.** One pulse is shown at its true length c τ = 300 m, traveling at c, reflecting at the
+target and returning. A wavefront emitted at offset s ∈ [0, τ] has traveled the path c (t − t_tx − s):
 
 ```
 d = path              while path ≤ r          going out
@@ -451,9 +451,9 @@ shrinking distances does not slow the pulse down. So time is slowed by a factor 
 by default), and every object is slowed by the same factor: the target is nearly frozen, moving about 1 m
 during the round trip.
 
-**8.6 Equations panel.** Each step of the computation, from the truth physics to the consistency tests,
+**8.6 Equations panel.** Each step of the computation, from the truth model to the consistency tests,
 shows its equations next to the live numbers of the scan under the cursor. Each quantity type has one
-fixed display unit. Large matrices are heat maps coloured by a unit-free magnitude, because their entries
+fixed display unit. Large matrices are heat maps colored by a unit-free magnitude, because their entries
 mix m, m/s, m/s² and ln β:
 
 ```
@@ -462,7 +462,7 @@ mix m, m/s, m/s² and ln β:
 |Φ_ij| σ_j / σ_i,   |H_ij| σ_j / √S_ii    transition and measurement Jacobians
 ```
 
-**8.7–8.9** Controls, readout and visual design: one colour per meaning (truth, estimate, covariance,
+**8.7–8.9** Controls, readout and visual design: one color per meaning (truth, estimate, covariance,
 measurements, beam, modes; green/amber/red reserved for status), text contrast at least 4.5:1, bundled
 fonts, sizes in font units so the layout follows the screen scaling.
 
