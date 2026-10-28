@@ -8,7 +8,7 @@ version = "0.0.1"
 description = "Radar tracking of a generic ballistic vehicle with an Extended Kalman Filter: 3-DOF physics, X-band radar model, 10-state EKF with BOOST/BALLISTIC modes, live 3D UI"
 readme = "README.md"
 requires-python = ">=3.12"
-authors = [{ name = "Jonathan Balulu Christiansen" }]
+authors = [{ name = "Jonathan Balulu" }]
 # loose lower bounds here; the exact tested versions are pinned in requirements.txt
 dependencies = [
     "numpy>=2.0",
